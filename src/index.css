@@ -24,3 +24,9 @@ footer {
 section {
   margin: 0px 2.5%;
 }
+*::-webkit-scrollbar {
+  width: 4px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #c1c1c180;
+}

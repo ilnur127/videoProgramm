@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react'
+import React, { useRef, useMemo, useCallback, useState } from 'react'
 import clsx from 'clsx'
 
 import { useAppDispatch, useAppSelector } from '../../redux/app/hooks'
@@ -29,6 +29,7 @@ function App (): JSX.Element {
 
   const activeTimeStamp = useAppSelector(selectActiveTimeStamp)
 
+  const [activeIndex, setActiveIndex] = useState(0)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const { data, isLoading, isSuccess, isError, error } =
@@ -46,6 +47,13 @@ function App (): JSX.Element {
     console.error(error)
   }
 
+  const changeVideoTime = useCallback((timestamp: number, index: number) => {
+    dispatch(setActiveTimeStamp(timestamp))
+    if (videoRef.current !== null) {
+      videoRef.current.currentTime = timestamp / 1000
+    }
+    setActiveIndex(index)
+  }, [dispatch])
   return (
     <>
       {isLoading && <Loader />}
@@ -77,30 +85,46 @@ function App (): JSX.Element {
           </div>
           <aside>
             <h3 className={classes.eventsList__header}>Список событий</h3>
-            <div className={classes.eventsList}>
+            <div>
               {statistics.length > 0
                 ? (
-                    statistics.map((stat) => (
-                      <div
-                        key={stat.id}
-                        className={clsx(
-                          classes.eventsList__item,
-                          activeTimeStamp >= stat.timestamp &&
-                          activeTimeStamp <= stat.timestamp + stat.duration
-                            ? classes.eventsList__item_active
-                            : ''
-                        )}
-                        onClick={() => {
-                          dispatch(setActiveTimeStamp(stat.timestamp))
-                          if (videoRef.current !== null) {
-                            videoRef.current.currentTime = stat.timestamp / 1000
-                          }
-                        }}
-                      >
-                        {timestampDecode(stat.timestamp)} -{' '}
-                        {timestampDecode(stat.timestamp + stat.duration)}
-                      </div>
-                    )))
+                  <>
+                    <div className={classes.eventsList}>
+                      {statistics.map((stat, i) => (
+                        <div
+                          key={stat.id}
+                          className={clsx(
+                            classes.eventsList__item,
+                            activeTimeStamp >= stat.timestamp &&
+                            activeTimeStamp <= stat.timestamp + stat.duration
+                              ? classes.eventsList__item_active
+                              : ''
+                          )}
+                          onClick={() => {
+                            changeVideoTime(stat.timestamp, i)
+                          }}
+                        >
+                          {timestampDecode(stat.timestamp)} -{' '}
+                          {timestampDecode(stat.timestamp + stat.duration)}
+                        </div>
+                      ))}
+                    </div>
+                    <div className={classes.eventsList__actions}>
+                      <button title='Первое событие' onClick={() => {
+                        changeVideoTime(statistics[0].timestamp, 0)
+                      }}>&lt;&lt;</button>
+                      <button title='Предыдущее событие' onClick={() => {
+                        changeVideoTime(statistics[activeIndex - 1].timestamp, activeIndex - 1)
+                      }}>&lt;</button>
+                      <button title='Следующее событие' onClick={() => {
+                        changeVideoTime(statistics[activeIndex + 1].timestamp, activeIndex + 1)
+                      }}>&gt;</button>
+                      <button title='Последнее событие'onClick={() => {
+                        changeVideoTime(statistics[statistics.length - 1].timestamp, statistics.length - 1)
+                      }}>&gt;&gt;</button>
+                    </div>
+                  </>
+                  )
                 : (<div>Статистики нет</div>)}
             </div>
           </aside>
