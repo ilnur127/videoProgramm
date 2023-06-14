@@ -6,8 +6,21 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+main {
+  display: grid;
+  grid-template-rows: 45px 1fr 45px;
+  min-height: 100vh;
+  grid-row-gap: 20px;
+}
+header,
+footer {
+  height: 45px;
+  background: rgb(230, 230, 230);
+}
+section {
+  margin: 0px 2.5%;
 }

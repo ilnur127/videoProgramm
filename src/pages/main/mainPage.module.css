@@ -1,0 +1,36 @@
+.mainBlock {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  grid-column-gap: 10px;
+  border: 1px solid hsl(0, 0%, 80%);
+  border-radius: 4px;
+}
+.mainBlock aside {
+  border-left: 1px solid hsl(0, 0%, 80%);
+  border-radius: 4px;
+}
+.videoBlock {
+  position: relative;
+}
+.videoBlock video {
+  border-radius: 4px;
+  height: 100%;
+}
+.eventBlock {
+  position: absolute;
+  background: greenyellow;
+}
+.eventsList__header {
+  text-align: center;
+  margin: 10px 0px;
+}
+.eventsList {
+  height: calc(100vh - 175px);
+  overflow: auto;
+}
+.eventsList__item {
+  padding: 10px;
+}
+.eventsList__item_active {
+  background: hsl(0, 0%, 80%);
+}
